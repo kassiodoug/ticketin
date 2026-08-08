@@ -1,0 +1,251 @@
+/*
+  Direção visual: bilheteria de cinema de bairro à noite.
+  Fundo tinta-escura, letreiro de marquise em âmbar, papel de ingresso
+  em off-white, linha de rasgo em vermelho de canhoto. O elemento-assinatura
+  é o "talão": cartão com borda serrilhada (canhoto), usado no card de
+  evento e no ingresso — reforça o tema em vez de decorar por decorar.
+*/
+
+:root {
+  --ink: #14171c;
+  --ink-raised: #1c2028;
+  --paper: #f4efe3;
+  --paper-dim: #cfc9ba;
+  --marquee: #e8a33d;
+  --stub-red: #c1483b;
+  --valid-green: #4f9a6e;
+  --line: #33383f;
+
+  --font-display: 'Oswald', 'Arial Narrow', sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --radius: 4px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 0.5rem;
+}
+
+a { color: var(--marquee); }
+
+button {
+  font-family: var(--font-body);
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.65rem 1.2rem;
+}
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--marquee);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  background: var(--marquee);
+  color: var(--ink);
+}
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--paper);
+  border: 1px solid var(--line);
+}
+
+.btn-danger {
+  background: var(--stub-red);
+  color: var(--paper);
+}
+
+input, select, textarea {
+  font-family: var(--font-body);
+  background: var(--ink-raised);
+  border: 1px solid var(--line);
+  color: var(--paper);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.75rem;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 4rem;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+.topbar .brand {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: 0.08em;
+  color: var(--marquee);
+  text-decoration: none;
+}
+.topbar nav a {
+  margin-left: 1.25rem;
+  color: var(--paper-dim);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+.topbar nav a:hover { color: var(--marquee); }
+
+/* --- Elemento-assinatura: o talão --- */
+.stub-card {
+  position: relative;
+  background: var(--ink-raised);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.stub-card .stub-tear {
+  border-top: 2px dashed var(--paper-dim);
+  position: relative;
+  margin: 0 1rem;
+}
+.stub-card .stub-tear::before,
+.stub-card .stub-tear::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  width: 16px;
+  height: 16px;
+  background: var(--ink);
+  border-radius: 50%;
+}
+.stub-card .stub-tear::before { left: -1.6rem; }
+.stub-card .stub-tear::after { right: -1.6rem; }
+
+.event-card {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  text-decoration: none;
+  color: inherit;
+}
+.event-card img {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  background: var(--line);
+}
+.event-card .eyebrow {
+  color: var(--marquee);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.event-card h3 { margin: 0.15rem 0 0.35rem; font-size: 1.1rem; }
+.event-card .meta { color: var(--paper-dim); font-size: 0.85rem; }
+
+.seat-map {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1rem;
+  background: var(--ink-raised);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+}
+.seat-row { display: flex; gap: 0.4rem; align-items: center; }
+.seat-row .row-label {
+  width: 1.4rem;
+  color: var(--paper-dim);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+.seat {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px 4px 8px 8px;
+  border: 1px solid var(--line);
+  background: var(--ink);
+  color: var(--paper-dim);
+  font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.seat[data-status='AVAILABLE'] { border-color: var(--paper-dim); }
+.seat[data-status='HELD'], .seat[data-status='SOLD'] {
+  background: var(--line);
+  color: var(--paper-dim);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.seat[data-selected='true'] {
+  background: var(--marquee);
+  border-color: var(--marquee);
+  color: var(--ink);
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.status-pill.valid { background: rgba(79,154,110,0.2); color: var(--valid-green); }
+.status-pill.used { background: rgba(207,201,186,0.15); color: var(--paper-dim); }
+.status-pill.invalid { background: rgba(193,72,59,0.2); color: var(--stub-red); }
+
+.gate-result {
+  padding: 2rem;
+  border-radius: var(--radius);
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  text-transform: uppercase;
+}
+.gate-result.VALID { background: rgba(79,154,110,0.18); color: var(--valid-green); border: 1px solid var(--valid-green); }
+.gate-result.ALREADY_USED { background: rgba(232,163,61,0.15); color: var(--marquee); border: 1px solid var(--marquee); }
+.gate-result.WRONG_EVENT,
+.gate-result.INVALID { background: rgba(193,72,59,0.18); color: var(--stub-red); border: 1px solid var(--stub-red); }
+
+.field { margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.35rem; }
+.field label { font-size: 0.85rem; color: var(--paper-dim); }
+
+.error-banner {
+  background: rgba(193,72,59,0.15);
+  border: 1px solid var(--stub-red);
+  color: var(--paper);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--paper-dim);
+  padding: 3rem 1rem;
+}
