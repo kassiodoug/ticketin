@@ -1,31 +1,31 @@
-"use client"
+"use client";
 
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { ApiError } from "../../api/client"
-import { Role, useAuth } from "../../context/AuthContext"
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { ApiError } from "../../api/client";
+import { Role, useAuth } from "../../context/AuthContext";
 
 export default function RegisterPage() {
-  const { register } = useAuth()
-  const router = useRouter()
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [role, setRole] = useState<Role>("CLIENT")
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
+  const { register } = useAuth();
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState<Role>("CLIENT");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setError(null)
-    setLoading(true)
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
     try {
-      await register(name, email, password, role)
-      router.push("/")
+      await register(name, email, password, role);
+      router.push("/");
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "falha ao cadastrar")
+      setError(err instanceof ApiError ? err.message : "falha ao cadastrar");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -81,5 +81,5 @@ export default function RegisterPage() {
         </button>
       </form>
     </div>
-  )
+  );
 }

@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { api, ApiError } from "../../api/client"
-import { RequireRole } from "../../components/RequireRole"
+import { useEffect, useState } from "react";
+import { api, ApiError } from "../../api/client";
+import { RequireRole } from "../../components/RequireRole";
 
 interface CatalogItem {
-  externalId: string
-  source: "TICKETMASTER" | "TMDB"
-  title: string
-  imageUrl?: string
-  suggestedVenue?: string
-  suggestedDate?: string
+  externalId: string;
+  source: "TICKETMASTER" | "TMDB";
+  title: string;
+  imageUrl?: string;
+  suggestedVenue?: string;
+  suggestedDate?: string;
 }
 interface OrgEvent {
-  id: string
-  title: string
-  starts_at: string
-  capacity: number
-  published: boolean
+  id: string;
+  title: string;
+  starts_at: string;
+  capacity: number;
+  published: boolean;
 }
 
 export default function OrganizerDashboardPage() {
@@ -25,60 +25,60 @@ export default function OrganizerDashboardPage() {
     <RequireRole role='ORGANIZER'>
       <OrganizerDashboardContent />
     </RequireRole>
-  )
+  );
 }
 
 function OrganizerDashboardContent() {
-  const [query, setQuery] = useState("")
-  const [items, setItems] = useState<CatalogItem[]>([])
-  const [searching, setSearching] = useState(false)
-  const [selected, setSelected] = useState<CatalogItem | null>(null)
-  const [events, setEvents] = useState<OrgEvent[]>([])
-  const [error, setError] = useState<string | null>(null)
+  const [query, setQuery] = useState("");
+  const [items, setItems] = useState<CatalogItem[]>([]);
+  const [searching, setSearching] = useState(false);
+  const [selected, setSelected] = useState<CatalogItem | null>(null);
+  const [events, setEvents] = useState<OrgEvent[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  const [venueName, setVenueName] = useState("")
-  const [venueAddress, setVenueAddress] = useState("")
-  const [startsAt, setStartsAt] = useState("")
-  const [price, setPrice] = useState("")
-  const [seatRows, setSeatRows] = useState(5)
-  const [seatCols, setSeatCols] = useState(8)
-  const [creating, setCreating] = useState(false)
+  const [venueName, setVenueName] = useState("");
+  const [venueAddress, setVenueAddress] = useState("");
+  const [startsAt, setStartsAt] = useState("");
+  const [price, setPrice] = useState("");
+  const [seatRows, setSeatRows] = useState(5);
+  const [seatCols, setSeatCols] = useState(8);
+  const [creating, setCreating] = useState(false);
 
   function loadMyEvents() {
-    api.get<OrgEvent[]>("/events/mine").then(setEvents)
+    api.get<OrgEvent[]>("/events/mine").then(setEvents);
   }
-  useEffect(loadMyEvents, [])
+  useEffect(loadMyEvents, []);
 
   async function search(e: React.FormEvent) {
-    e.preventDefault()
-    setSearching(true)
-    setError(null)
+    e.preventDefault();
+    setSearching(true);
+    setError(null);
     try {
       const res = await api.get<{ items: CatalogItem[]; errors: string[] }>(
         `/catalog/search?q=${encodeURIComponent(query)}&source=both`
-      )
-      setItems(res.items)
-      if (res.errors?.length) setError(res.errors.join(" | "))
+      );
+      setItems(res.items);
+      if (res.errors?.length) setError(res.errors.join(" | "));
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "falha na busca")
+      setError(err instanceof ApiError ? err.message : "falha na busca");
     } finally {
-      setSearching(false)
+      setSearching(false);
     }
   }
 
   function pick(item: CatalogItem) {
-    setSelected(item)
-    if (item.suggestedVenue) setVenueName(item.suggestedVenue)
-    if (item.suggestedDate) setStartsAt(item.suggestedDate.slice(0, 16))
+    setSelected(item);
+    if (item.suggestedVenue) setVenueName(item.suggestedVenue);
+    if (item.suggestedDate) setStartsAt(item.suggestedDate.slice(0, 16));
   }
 
   async function createEvent(e: React.FormEvent) {
-    e.preventDefault()
-    if (!selected) return
-    setCreating(true)
-    setError(null)
+    e.preventDefault();
+    if (!selected) return;
+    setCreating(true);
+    setError(null);
     try {
-      const capacity = seatRows * seatCols
+      const capacity = seatRows * seatCols;
       await api.post("/events", {
         source: selected.source,
         externalId: selected.externalId,
@@ -91,17 +91,17 @@ function OrganizerDashboardContent() {
         capacity,
         seatRows,
         seatCols,
-      })
-      setSelected(null)
-      setVenueName("")
-      setVenueAddress("")
-      setStartsAt("")
-      setPrice("")
-      loadMyEvents()
+      });
+      setSelected(null);
+      setVenueName("");
+      setVenueAddress("");
+      setStartsAt("");
+      setPrice("");
+      loadMyEvents();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "falha ao criar evento")
+      setError(err instanceof ApiError ? err.message : "falha ao criar evento");
     } finally {
-      setCreating(false)
+      setCreating(false);
     }
   }
 
@@ -264,5 +264,5 @@ function OrganizerDashboardContent() {
         </div>
       ))}
     </div>
-  )
+  );
 }

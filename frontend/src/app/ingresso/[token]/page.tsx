@@ -1,42 +1,42 @@
-"use client"
+"use client";
 
-import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
-import { api } from "../../../api/client"
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { api } from "../../../api/client";
 
 interface SharedTicket {
-  id: string
-  status: "VALID" | "USED" | "CANCELED"
-  event_title: string
-  starts_at: string
-  venue_name: string
-  row_label: string
-  col_number: number
-  used_at?: string
+  id: string;
+  status: "VALID" | "USED" | "CANCELED";
+  event_title: string;
+  starts_at: string;
+  venue_name: string;
+  row_label: string;
+  col_number: number;
+  used_at?: string;
 }
 
 // Rota pública — quem recebe o link não precisa estar logado. Mostra o
 // status do ingresso, mas nunca o código assinado (isso ficaria exposto
 // pra qualquer um com o link, o que anularia a proteção da portaria).
 export default function TicketSharePage() {
-  const { token } = useParams<{ token: string }>()
-  const [ticket, setTicket] = useState<SharedTicket | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const { token } = useParams<{ token: string }>();
+  const [ticket, setTicket] = useState<SharedTicket | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     api
       .get<SharedTicket>(`/tickets/share/${token}`)
       .then(setTicket)
-      .catch(() => setError("link inválido ou expirado"))
-  }, [token])
+      .catch(() => setError("link inválido ou expirado"));
+  }, [token]);
 
   if (error)
     return (
       <div className='container'>
         <div className='error-banner'>{error}</div>
       </div>
-    )
-  if (!ticket) return <div className='container'>Carregando...</div>
+    );
+  if (!ticket) return <div className='container'>Carregando...</div>;
 
   return (
     <div className='container' style={{ maxWidth: 420 }}>
@@ -73,5 +73,5 @@ export default function TicketSharePage() {
         </p>
       </div>
     </div>
-  )
+  );
 }

@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { api } from "../../api/client"
-import { RequireRole } from "../../components/RequireRole"
+import { useEffect, useState } from "react";
+import { api } from "../../api/client";
+import { RequireRole } from "../../components/RequireRole";
 
 interface Ticket {
-  id: string
-  status: "VALID" | "USED" | "CANCELED"
-  share_token: string
-  event_title: string
-  starts_at: string
-  venue_name: string
-  row_label: string
-  col_number: number
+  id: string;
+  status: "VALID" | "USED" | "CANCELED";
+  share_token: string;
+  event_title: string;
+  starts_at: string;
+  venue_name: string;
+  row_label: string;
+  col_number: number;
 }
 
 export default function MyTicketsPage() {
@@ -20,31 +20,31 @@ export default function MyTicketsPage() {
     <RequireRole role='CLIENT'>
       <MyTicketsContent />
     </RequireRole>
-  )
+  );
 }
 
 function MyTicketsContent() {
-  const [tickets, setTickets] = useState<Ticket[]>([])
-  const [qrByTicket, setQrByTicket] = useState<Record<string, string>>({})
-  const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [qrByTicket, setQrByTicket] = useState<Record<string, string>>({});
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
-    api.get<Ticket[]>("/tickets/mine").then(setTickets)
-  }, [])
+    api.get<Ticket[]>("/tickets/mine").then(setTickets);
+  }, []);
 
   async function loadQr(ticketId: string) {
-    if (qrByTicket[ticketId]) return
+    if (qrByTicket[ticketId]) return;
     const { dataUrl } = await api.get<{ dataUrl: string }>(
       `/tickets/${ticketId}/qrcode`
-    )
-    setQrByTicket((prev) => ({ ...prev, [ticketId]: dataUrl }))
+    );
+    setQrByTicket((prev) => ({ ...prev, [ticketId]: dataUrl }));
   }
 
   function copyShareLink(ticket: Ticket) {
-    const url = `${window.location.origin}/ingresso/${ticket.share_token}`
-    navigator.clipboard.writeText(url)
-    setCopiedId(ticket.id)
-    setTimeout(() => setCopiedId(null), 2000)
+    const url = `${window.location.origin}/ingresso/${ticket.share_token}`;
+    navigator.clipboard.writeText(url);
+    setCopiedId(ticket.id);
+    setTimeout(() => setCopiedId(null), 2000);
   }
 
   return (
@@ -114,5 +114,5 @@ function MyTicketsContent() {
         </div>
       ))}
     </div>
-  )
+  );
 }

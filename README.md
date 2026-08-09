@@ -98,6 +98,7 @@ indisponível. O evento semeado (`MANUAL`) não depende delas.
 - Geração da estrutura inicial do projeto, como: schema do banco de dados, rotas do back-end e páginas do front-end;
 - Estrutura inicial do back-end (Express);
 - Criação de testes automatizados com Jest;
+- Criação e configuração dos arquivos Docker;
 
 ## Estrutura de pastas e arquivos
 

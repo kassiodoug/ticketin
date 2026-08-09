@@ -1,53 +1,53 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import { api } from "../../api/client"
-import { RequireRole } from "../../components/RequireRole"
+import { useEffect, useRef, useState } from "react";
+import { api } from "../../api/client";
+import { RequireRole } from "../../components/RequireRole";
 
 type GateResult =
   | { result: "INVALID"; reason: string }
   | { result: "ALREADY_USED"; usedAt: string }
   | { result: "WRONG_EVENT"; ticketEventTitle: string }
-  | { result: "VALID"; ticket: any }
+  | { result: "VALID"; ticket: any };
 
-const SCANNER_ID = "gate-qr-reader"
+const SCANNER_ID = "gate-qr-reader";
 
 export default function GateScannerPage() {
   return (
     <RequireRole role='GATE'>
       <GateScannerContent />
     </RequireRole>
-  )
+  );
 }
 
 function GateScannerContent() {
-  const [manualCode, setManualCode] = useState("")
-  const [result, setResult] = useState<GateResult | null>(null)
-  const [cameraOn, setCameraOn] = useState(false)
-  const [cameraError, setCameraError] = useState<string | null>(null)
-  const busyRef = useRef(false)
+  const [manualCode, setManualCode] = useState("");
+  const [result, setResult] = useState<GateResult | null>(null);
+  const [cameraOn, setCameraOn] = useState(false);
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const busyRef = useRef(false);
 
   async function validate(code: string) {
-    if (!code.trim() || busyRef.current) return
-    busyRef.current = true
+    if (!code.trim() || busyRef.current) return;
+    busyRef.current = true;
     try {
-      const res = await api.post<GateResult>("/gate/validate", { code })
-      setResult(res)
+      const res = await api.post<GateResult>("/gate/validate", { code });
+      setResult(res);
     } finally {
-      busyRef.current = false
+      busyRef.current = false;
     }
   }
 
   // html5-qrcode acessa a câmera do navegador — importado dinamicamente
   // porque depende de APIs do browser (não existe no server-side render do Next).
   useEffect(() => {
-    if (!cameraOn) return
-    let scanner: import("html5-qrcode").Html5Qrcode | null = null
-    let cancelled = false
+    if (!cameraOn) return;
+    let scanner: import("html5-qrcode").Html5Qrcode | null = null;
+    let cancelled = false;
 
     import("html5-qrcode").then(({ Html5Qrcode }) => {
-      if (cancelled) return
-      scanner = new Html5Qrcode(SCANNER_ID)
+      if (cancelled) return;
+      scanner = new Html5Qrcode(SCANNER_ID);
       scanner
         .start(
           { facingMode: "environment" },
@@ -59,15 +59,15 @@ function GateScannerContent() {
           setCameraError(
             "não foi possível acessar a câmera — use a digitação manual abaixo"
           )
-        )
-    })
+        );
+    });
 
     return () => {
-      cancelled = true
-      scanner?.stop().catch(() => {})
-    }
+      cancelled = true;
+      scanner?.stop().catch(() => {});
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cameraOn])
+  }, [cameraOn]);
 
   return (
     <div className='container' style={{ maxWidth: 480 }}>
@@ -91,9 +91,9 @@ function GateScannerContent() {
 
       <form
         onSubmit={(e) => {
-          e.preventDefault()
-          validate(manualCode)
-          setManualCode("")
+          e.preventDefault();
+          validate(manualCode);
+          setManualCode("");
         }}
         style={{ display: "flex", gap: "0.5rem", marginTop: "1.5rem" }}
       >
@@ -122,5 +122,5 @@ function GateScannerContent() {
         </div>
       )}
     </div>
-  )
+  );
 }

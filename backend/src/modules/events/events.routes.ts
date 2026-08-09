@@ -1,35 +1,35 @@
-import { Router } from "express"
-import { requireAuth, requireRole } from "../../middleware/auth"
-import * as eventsService from "./events.service"
+import { Router } from "express";
+import { requireAuth, requireRole } from "../../middleware/auth";
+import * as eventsService from "./events.service";
 
-export const eventsRouter = Router()
+export const eventsRouter = Router();
 
 // Navegação pública (cliente não precisa estar logado para ver o catálogo).
 eventsRouter.get("/", async (req, res) => {
-  const { q, from, to } = req.query
+  const { q, from, to } = req.query;
   const events = await eventsService.listPublishedEvents({
     q: q ? String(q) : undefined,
     from: from ? String(from) : undefined,
     to: to ? String(to) : undefined,
-  })
-  res.json(events)
-})
+  });
+  res.json(events);
+});
 
 eventsRouter.get(
   "/mine",
   requireAuth,
   requireRole("ORGANIZER"),
   async (req, res) => {
-    const events = await eventsService.listEventsByOrganizer(req.user!.id)
-    res.json(events)
+    const events = await eventsService.listEventsByOrganizer(req.user!.id);
+    res.json(events);
   }
-)
+);
 
 eventsRouter.get("/:id", async (req, res) => {
-  const event = await eventsService.getEventWithSeats(req.params.id)
-  if (!event) return res.status(404).json({ error: "evento não encontrado" })
-  res.json(event)
-})
+  const event = await eventsService.getEventWithSeats(req.params.id);
+  if (!event) return res.status(404).json({ error: "evento não encontrado" });
+  res.json(event);
+});
 
 eventsRouter.post(
   "/",
@@ -49,7 +49,7 @@ eventsRouter.post(
       capacity,
       seatRows,
       seatCols,
-    } = req.body ?? {}
+    } = req.body ?? {};
 
     if (
       !title ||
@@ -63,7 +63,7 @@ eventsRouter.post(
       return res.status(400).json({
         error:
           "title, venueName, startsAt, priceCents, capacity, seatRows e seatCols são obrigatórios",
-      })
+      });
     }
 
     try {
@@ -81,10 +81,10 @@ eventsRouter.post(
         capacity,
         seatRows,
         seatCols,
-      })
-      res.status(201).json(event)
+      });
+      res.status(201).json(event);
     } catch (err: any) {
-      res.status(400).json({ error: err.message })
+      res.status(400).json({ error: err.message });
     }
   }
-)
+);

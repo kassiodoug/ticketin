@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { ApiError } from "../../api/client"
-import { useAuth } from "../../context/AuthContext"
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { ApiError } from "../../api/client";
+import { useAuth } from "../../context/AuthContext";
 
 export default function LoginPage() {
-  const { login } = useAuth()
-  const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
+  const { login } = useAuth();
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setError(null)
-    setLoading(true)
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
     try {
-      await login(email, password)
-      router.push("/")
+      await login(email, password);
+      router.push("/");
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "falha ao entrar")
+      setError(err instanceof ApiError ? err.message : "falha ao entrar");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -71,5 +71,5 @@ export default function LoginPage() {
         cliente2@evento.test, portaria@evento.test — senha: senha123
       </p>
     </div>
-  )
+  );
 }

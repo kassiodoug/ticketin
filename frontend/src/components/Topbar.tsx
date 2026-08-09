@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useAuth } from "../context/AuthContext"
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../context/AuthContext";
 
 export function Topbar() {
-  const { user, logout, ready } = useAuth()
-  const router = useRouter()
+  const { user, logout, ready } = useAuth();
+  const router = useRouter();
 
   return (
     <header className='topbar'>
@@ -24,9 +24,9 @@ export function Topbar() {
           <a
             href='#'
             onClick={(e) => {
-              e.preventDefault()
-              logout()
-              router.push("/")
+              e.preventDefault();
+              logout();
+              router.push("/");
             }}
           >
             Sair ({user.name.split(" ")[0]})
@@ -34,5 +34,5 @@ export function Topbar() {
         )}
       </nav>
     </header>
-  )
+  );
 }

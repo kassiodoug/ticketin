@@ -1,31 +1,31 @@
-import { pool } from "../../db/pool"
+import { pool } from "../../db/pool";
 
 export interface CreateEventInput {
-  organizerId: string
-  source: "TICKETMASTER" | "TMDB" | "MANUAL"
-  externalId?: string
-  title: string
-  description?: string
-  imageUrl?: string
-  venueName: string
-  venueAddress?: string
-  startsAt: string
-  priceCents: number
-  capacity: number
-  seatRows: number
-  seatCols: number
+  organizerId: string;
+  source: "TICKETMASTER" | "TMDB" | "MANUAL";
+  externalId?: string;
+  title: string;
+  description?: string;
+  imageUrl?: string;
+  venueName: string;
+  venueAddress?: string;
+  startsAt: string;
+  priceCents: number;
+  capacity: number;
+  seatRows: number;
+  seatCols: number;
 }
 
 export async function createEvent(input: CreateEventInput) {
   if (input.seatRows * input.seatCols < input.capacity) {
     throw new Error(
       "seatRows x seatCols precisa comportar a capacity informada"
-    )
+    );
   }
 
-  const client = await pool.connect()
+  const client = await pool.connect();
   try {
-    await client.query("BEGIN")
+    await client.query("BEGIN");
 
     const eventResult = await client.query(
       `INSERT INTO events
@@ -48,82 +48,82 @@ export async function createEvent(input: CreateEventInput) {
         input.seatRows,
         input.seatCols,
       ]
-    )
-    const event = eventResult.rows[0]
+    );
+    const event = eventResult.rows[0];
 
     // Gera o mapa de assentos: linhas A, B, C... até seatRows, seatCols por linha,
     // truncado em `capacity` (permite mapas "incompletos" na última linha).
     const rowLabels = Array.from({ length: input.seatRows }, (_, i) =>
       String.fromCharCode(65 + i)
-    )
-    let seatsCreated = 0
+    );
+    let seatsCreated = 0;
     for (const row of rowLabels) {
       for (let col = 1; col <= input.seatCols; col++) {
-        if (seatsCreated >= input.capacity) break
+        if (seatsCreated >= input.capacity) break;
         await client.query(
           `INSERT INTO seats (event_id, row_label, col_number) VALUES ($1,$2,$3)`,
           [event.id, row, col]
-        )
-        seatsCreated++
+        );
+        seatsCreated++;
       }
     }
 
-    await client.query("COMMIT")
-    return event
+    await client.query("COMMIT");
+    return event;
   } catch (err) {
-    await client.query("ROLLBACK")
-    throw err
+    await client.query("ROLLBACK");
+    throw err;
   } finally {
-    client.release()
+    client.release();
   }
 }
 
 export async function listPublishedEvents(filters: {
-  q?: string
-  from?: string
-  to?: string
+  q?: string;
+  from?: string;
+  to?: string;
 }) {
-  const conditions = ["published = true"]
-  const params: any[] = []
+  const conditions = ["published = true"];
+  const params: any[] = [];
 
   if (filters.q) {
-    params.push(`%${filters.q}%`)
-    conditions.push(`title ILIKE $${params.length}`)
+    params.push(`%${filters.q}%`);
+    conditions.push(`title ILIKE $${params.length}`);
   }
   if (filters.from) {
-    params.push(filters.from)
-    conditions.push(`starts_at >= $${params.length}`)
+    params.push(filters.from);
+    conditions.push(`starts_at >= $${params.length}`);
   }
   if (filters.to) {
-    params.push(filters.to)
-    conditions.push(`starts_at <= $${params.length}`)
+    params.push(filters.to);
+    conditions.push(`starts_at <= $${params.length}`);
   }
 
   const result = await pool.query(
     `SELECT * FROM events WHERE ${conditions.join(" AND ")} ORDER BY starts_at ASC`,
     params
-  )
-  return result.rows
+  );
+  return result.rows;
 }
 
 export async function getEventWithSeats(eventId: string) {
   const eventResult = await pool.query(`SELECT * FROM events WHERE id = $1`, [
     eventId,
-  ])
-  const event = eventResult.rows[0]
-  if (!event) return null
+  ]);
+  const event = eventResult.rows[0];
+  if (!event) return null;
 
   const seatsResult = await pool.query(
     `SELECT id, row_label, col_number, status FROM seats WHERE event_id = $1 ORDER BY row_label, col_number`,
     [eventId]
-  )
-  return { ...event, seats: seatsResult.rows }
+  );
+  return { ...event, seats: seatsResult.rows };
 }
 
 export async function listEventsByOrganizer(organizerId: string) {
   const result = await pool.query(
     `SELECT * FROM events WHERE organizer_id = $1 ORDER BY created_at DESC`,
     [organizerId]
-  )
-  return result.rows
+  );
+  return result.rows;
 }

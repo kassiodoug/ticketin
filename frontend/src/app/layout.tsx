@@ -1,17 +1,17 @@
-import type { Metadata } from "next"
-import { Topbar } from "../components/Topbar"
-import { AuthProvider } from "../context/AuthContext"
-import "./globals.css"
+import type { Metadata } from "next";
+import { Topbar } from "../components/Topbar";
+import { AuthProvider } from "../context/AuthContext";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Bilheteria — eventos e ingressos",
   description: "Plataforma de eventos e ingressos — Desafio Elite Dev",
-}
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang='pt-BR'>
@@ -29,5 +29,5 @@ export default function RootLayout({
         </AuthProvider>
       </body>
     </html>
-  )
+  );
 }

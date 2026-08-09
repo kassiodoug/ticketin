@@ -1,46 +1,46 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useEffect, useState } from "react"
-import { api } from "../api/client"
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { api } from "../api/client";
 
 interface EventSummary {
-  id: string
-  title: string
-  venue_name: string
-  starts_at: string
-  price_cents: number
-  image_url?: string
+  id: string;
+  title: string;
+  venue_name: string;
+  starts_at: string;
+  price_cents: number;
+  image_url?: string;
 }
 
 export default function Home() {
-  const [events, setEvents] = useState<EventSummary[]>([])
-  const [q, setQ] = useState("")
-  const [loading, setLoading] = useState(true)
+  const [events, setEvents] = useState<EventSummary[]>([]);
+  const [q, setQ] = useState("");
+  const [loading, setLoading] = useState(true);
 
   async function load(query = "") {
-    setLoading(true)
+    setLoading(true);
     try {
       const data = await api.get<EventSummary[]>(
         `/events${query ? `?q=${encodeURIComponent(query)}` : ""}`
-      )
-      setEvents(data)
+      );
+      setEvents(data);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   useEffect(() => {
-    load()
-  }, [])
+    load();
+  }, []);
 
   return (
     <div className='container'>
       <h1>Em cartaz</h1>
       <form
         onSubmit={(e) => {
-          e.preventDefault()
-          load(q)
+          e.preventDefault();
+          load(q);
         }}
         style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem" }}
       >
@@ -88,5 +88,5 @@ export default function Home() {
         </Link>
       ))}
     </div>
-  )
+  );
 }

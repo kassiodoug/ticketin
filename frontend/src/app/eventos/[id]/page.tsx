@@ -1,81 +1,81 @@
-"use client"
+"use client";
 
-import { useParams, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import { api, ApiError } from "../../../api/client"
-import { useAuth } from "../../../context/AuthContext"
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { api, ApiError } from "../../../api/client";
+import { useAuth } from "../../../context/AuthContext";
 
 interface Seat {
-  id: string
-  row_label: string
-  col_number: number
-  status: "AVAILABLE" | "HELD" | "SOLD"
+  id: string;
+  row_label: string;
+  col_number: number;
+  status: "AVAILABLE" | "HELD" | "SOLD";
 }
 interface EventDetailData {
-  id: string
-  title: string
-  description?: string
-  venue_name: string
-  starts_at: string
-  price_cents: number
-  seat_rows: number
-  seat_cols: number
-  seats: Seat[]
+  id: string;
+  title: string;
+  description?: string;
+  venue_name: string;
+  starts_at: string;
+  price_cents: number;
+  seat_rows: number;
+  seat_cols: number;
+  seats: Seat[];
 }
 
 export default function EventDetailPage() {
-  const { id } = useParams<{ id: string }>()
-  const { user } = useAuth()
-  const router = useRouter()
-  const [event, setEvent] = useState<EventDetailData | null>(null)
-  const [selected, setSelected] = useState<string[]>([])
-  const [error, setError] = useState<string | null>(null)
-  const [submitting, setSubmitting] = useState(false)
+  const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
+  const router = useRouter();
+  const [event, setEvent] = useState<EventDetailData | null>(null);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     api
       .get<EventDetailData>(`/events/${id}`)
       .then(setEvent)
-      .catch(() => setError("evento não encontrado"))
-  }, [id])
+      .catch(() => setError("evento não encontrado"));
+  }, [id]);
 
   if (error)
     return (
       <div className='container'>
         <div className='error-banner'>{error}</div>
       </div>
-    )
-  if (!event) return <div className='container'>Carregando...</div>
+    );
+  if (!event) return <div className='container'>Carregando...</div>;
 
-  const rows = Array.from(new Set(event.seats.map((s) => s.row_label))).sort()
+  const rows = Array.from(new Set(event.seats.map((s) => s.row_label))).sort();
 
   function toggleSeat(seat: Seat) {
-    if (seat.status !== "AVAILABLE") return
+    if (seat.status !== "AVAILABLE") return;
     setSelected((prev) =>
       prev.includes(seat.id)
         ? prev.filter((sid) => sid !== seat.id)
         : [...prev, seat.id]
-    )
+    );
   }
 
   async function reserve() {
-    if (!user) return router.push("/login")
+    if (!user) return router.push("/login");
     if (user.role !== "CLIENT") {
-      setError("apenas contas de cliente podem reservar ingressos")
-      return
+      setError("apenas contas de cliente podem reservar ingressos");
+      return;
     }
-    setSubmitting(true)
-    setError(null)
+    setSubmitting(true);
+    setError(null);
     try {
       const reservation = await api.post<{ id: string }>("/reservations", {
-        eventId: event.id,
+        eventId: event?.id,
         seatIds: selected,
-      })
-      router.push(`/checkout/${reservation.id}`)
+      });
+      router.push(`/checkout/${reservation.id}`);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "falha ao reservar")
+      setError(err instanceof ApiError ? err.message : "falha ao reservar");
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
   }
 
@@ -152,5 +152,5 @@ export default function EventDetailPage() {
         </button>
       </div>
     </div>
-  )
+  );
 }
