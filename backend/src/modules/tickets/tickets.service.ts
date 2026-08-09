@@ -1,4 +1,4 @@
-import { pool } from '../../db/pool';
+import { pool } from "../../db/pool"
 
 export async function listMyTickets(ownerId: string) {
   const result = await pool.query(
@@ -11,8 +11,8 @@ export async function listMyTickets(ownerId: string) {
      WHERE t.owner_id = $1
      ORDER BY e.starts_at ASC`,
     [ownerId]
-  );
-  return result.rows;
+  )
+  return result.rows
 }
 
 export async function getTicketForOwner(ticketId: string, ownerId: string) {
@@ -23,8 +23,8 @@ export async function getTicketForOwner(ticketId: string, ownerId: string) {
      JOIN seats s ON s.id = t.seat_id
      WHERE t.id = $1 AND t.owner_id = $2`,
     [ticketId, ownerId]
-  );
-  return result.rows[0] ?? null;
+  )
+  return result.rows[0] ?? null
 }
 
 // Usado pelo link público de compartilhamento — não exige autenticação,
@@ -39,6 +39,6 @@ export async function getTicketByShareToken(shareToken: string) {
      JOIN seats s ON s.id = t.seat_id
      WHERE t.share_token = $1`,
     [shareToken]
-  );
-  return result.rows[0] ?? null;
+  )
+  return result.rows[0] ?? null
 }

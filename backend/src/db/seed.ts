@@ -5,47 +5,71 @@
  *
  * Rodar com: npm run seed
  */
-import bcrypt from 'bcryptjs';
-import { randomUUID } from 'crypto';
-import { pool } from './pool';
+import bcrypt from "bcryptjs"
+import { randomUUID } from "crypto"
+import { pool } from "./pool"
 
 async function hash(pw: string) {
-  return bcrypt.hash(pw, 10);
+  return bcrypt.hash(pw, 10)
 }
 
 async function main() {
-  const client = await pool.connect();
+  const client = await pool.connect()
   try {
-    await client.query('BEGIN');
+    await client.query("BEGIN")
 
     // Limpa dados anteriores (ambiente de teste/dev apenas)
     await client.query(
-      'TRUNCATE tickets, reservation_seats, reservations, seats, events, users RESTART IDENTITY CASCADE'
-    );
+      "TRUNCATE tickets, reservation_seats, reservations, seats, events, users RESTART IDENTITY CASCADE"
+    )
 
-    const organizerId = randomUUID();
-    const client1Id = randomUUID();
-    const client2Id = randomUUID();
-    const gateId = randomUUID();
+    const organizerId = randomUUID()
+    const client1Id = randomUUID()
+    const client2Id = randomUUID()
+    const gateId = randomUUID()
 
     const users = [
-      [organizerId, 'Ana Organizadora', 'organizador@evento.test', await hash('senha123'), 'ORGANIZER'],
-      [client1Id, 'Bruno Cliente', 'cliente1@evento.test', await hash('senha123'), 'CLIENT'],
-      [client2Id, 'Carla Cliente', 'cliente2@evento.test', await hash('senha123'), 'CLIENT'],
-      [gateId, 'Diego Portaria', 'portaria@evento.test', await hash('senha123'), 'GATE'],
-    ];
+      [
+        organizerId,
+        "Ana Organizadora",
+        "organizador@evento.test",
+        await hash("senha123"),
+        "ORGANIZER",
+      ],
+      [
+        client1Id,
+        "Bruno Cliente",
+        "cliente1@evento.test",
+        await hash("senha123"),
+        "CLIENT",
+      ],
+      [
+        client2Id,
+        "Carla Cliente",
+        "cliente2@evento.test",
+        await hash("senha123"),
+        "CLIENT",
+      ],
+      [
+        gateId,
+        "Diego Portaria",
+        "portaria@evento.test",
+        await hash("senha123"),
+        "GATE",
+      ],
+    ]
 
     for (const [id, name, email, password_hash, role] of users) {
       await client.query(
         `INSERT INTO users (id, name, email, password_hash, role) VALUES ($1,$2,$3,$4,$5)`,
         [id, name, email, password_hash, role]
-      );
+      )
     }
 
-    const eventId = randomUUID();
-    const seatRows = 5;
-    const seatCols = 8;
-    const capacity = seatRows * seatCols;
+    const eventId = randomUUID()
+    const seatRows = 5
+    const seatCols = 8
+    const capacity = seatRows * seatCols
 
     await client.query(
       `INSERT INTO events
@@ -55,48 +79,52 @@ async function main() {
       [
         eventId,
         organizerId,
-        'Noite de Cinema: Sessão Especial',
-        'Evento de teste semeado automaticamente para avaliação do desafio.',
-        'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba',
-        'Cine Elite - Sala 3',
-        'Av. Principal, 1000',
+        "Noite de Cinema: Sessão Especial",
+        "Evento de teste semeado automaticamente para avaliação do desafio.",
+        "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba",
+        "Cine Elite - Sala 3",
+        "Av. Principal, 1000",
         3500,
         capacity,
         seatRows,
         seatCols,
       ]
-    );
+    )
 
-    const rowLabels = ['A', 'B', 'C', 'D', 'E'];
+    const rowLabels = ["A", "B", "C", "D", "E"]
     for (const row of rowLabels) {
       for (let col = 1; col <= seatCols; col++) {
         await client.query(
           `INSERT INTO seats (event_id, row_label, col_number, status) VALUES ($1,$2,$3,'AVAILABLE')`,
           [eventId, row, col]
-        );
+        )
       }
     }
 
-    await client.query('COMMIT');
+    await client.query("COMMIT")
 
-    console.log('Seed concluído. Usuários de teste:');
+    console.log("Seed concluído. Usuários de teste:")
     console.table([
-      { papel: 'ORGANIZER', email: 'organizador@evento.test', senha: 'senha123' },
-      { papel: 'CLIENT', email: 'cliente1@evento.test', senha: 'senha123' },
-      { papel: 'CLIENT', email: 'cliente2@evento.test', senha: 'senha123' },
-      { papel: 'GATE', email: 'portaria@evento.test', senha: 'senha123' },
-    ]);
-    console.log(`Evento semeado: ${eventId} (${capacity} assentos disponíveis)`);
+      {
+        papel: "ORGANIZER",
+        email: "organizador@evento.test",
+        senha: "senha123",
+      },
+      { papel: "CLIENT", email: "cliente1@evento.test", senha: "senha123" },
+      { papel: "CLIENT", email: "cliente2@evento.test", senha: "senha123" },
+      { papel: "GATE", email: "portaria@evento.test", senha: "senha123" },
+    ])
+    console.log(`Evento semeado: ${eventId} (${capacity} assentos disponíveis)`)
   } catch (err) {
-    await client.query('ROLLBACK');
-    throw err;
+    await client.query("ROLLBACK")
+    throw err
   } finally {
-    client.release();
-    await pool.end();
+    client.release()
+    await pool.end()
   }
 }
 
 main().catch((err) => {
-  console.error('Falha no seed:', err);
-  process.exit(1);
-});
+  console.error("Falha no seed:", err)
+  process.exit(1)
+})

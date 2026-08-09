@@ -1,21 +1,25 @@
-import type { Metadata } from 'next';
-import { AuthProvider } from '../context/AuthContext';
-import { Topbar } from '../components/Topbar';
-import './globals.css';
+import type { Metadata } from "next"
+import { Topbar } from "../components/Topbar"
+import { AuthProvider } from "../context/AuthContext"
+import "./globals.css"
 
 export const metadata: Metadata = {
-  title: 'Bilheteria — eventos e ingressos',
-  description: 'Plataforma de eventos e ingressos — Desafio Elite Dev',
-};
+  title: "Bilheteria — eventos e ingressos",
+  description: "Plataforma de eventos e ingressos — Desafio Elite Dev",
+}
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="pt-BR">
+    <html lang='pt-BR'>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel='preconnect' href='https://fonts.googleapis.com' />
         <link
-          href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap"
-          rel="stylesheet"
+          href='https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap'
+          rel='stylesheet'
         />
       </head>
       <body>
@@ -25,5 +29,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </AuthProvider>
       </body>
     </html>
-  );
+  )
 }
