@@ -23,7 +23,6 @@ COPY package*.json ./
 RUN npm ci --omit=dev
 
 COPY --from=builder /.next ./.next
-# COPY --from=builder /src/app/public ./public
 
 EXPOSE 3000
 
