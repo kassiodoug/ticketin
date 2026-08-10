@@ -4,14 +4,18 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+
     container_name: frontend
     restart: unless-stopped
     ports:
       - "3000:3000"
+
     environment:
       NODE_ENV: production
+
     depends_on:
       - backend
+
     networks:
       - frontend_network
 
@@ -24,14 +28,24 @@ services:
     restart: unless-stopped
     ports:
       - "3333:3333"
+
     env_file:
       - ./backend/.env
+
     environment:
       NODE_ENV: production
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/ticketin
+
     depends_on:
       postgres:
         condition: service_healthy
+
+    # command: >
+    #   sh -c "
+    #     npm run migrate &&
+    #     npm run seed
+    #   "
+
     networks:
       - frontend_network
       - backend_network
@@ -41,14 +55,18 @@ services:
     image: postgres:16-alpine
     container_name: postgres
     restart: unless-stopped
+
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: ticketin
+
     volumes:
       - pgdata:/var/lib/postgresql/data
+
     networks:
       - backend_network
+
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d ticketin"]
       interval: 5s

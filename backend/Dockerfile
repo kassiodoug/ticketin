@@ -8,6 +8,7 @@ RUN npm ci
 
 COPY tsconfig.json ./
 COPY src ./src
+COPY src/db/schema.sql /dist/db/schema.sql
 
 RUN npm run build
 
