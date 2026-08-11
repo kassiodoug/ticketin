@@ -5,38 +5,43 @@ Projeto participando do processo seletivo do Projeto de Desenvolvimento ELITE DE
 
 ## Como rodar o projeto
 
-### 1. Banco de dados
+### 1. Configurando .env do back-end, a partir da pasta raiz execute os seguintes comandos:
 
-Na pasta raiz (/tickein) rodar o comando:
+```bash
+cd backend
+cp .env.example .env
+```
+
+E insira valores para as variáveis JWT_SECRET, TICKET_SIGNING_SECRET, TICKETMASTER_API_KEY e TMDB_API_KEY no arquivo .env.
+
+### 2. Configurando .env do front-end, a partir da pasta raiz execute os seguintes comandos:
+
+```bash
+cd frontend
+cp .env.example .env
+```
+
+### 3. Gerando containers:
+
+Basta rodar o comando abaixo para criar os containers:
 
 ```bash
 docker compose up -d
 ```
 
-Isso sobe um Postgres em `localhost:5432` com usuário `postgres`, senha
-`postgres` e banco `ticketin`.
-
-### 2. Back-end
+E depois rodar os comandos:
 
 ```bash
-cd backend
-cp .env.example .env
-npm install
-npm run migrate
-npm run seed
-npm run dev
+docker exec backend npm run migrate
 ```
 
-### 3. Front-end
+e
 
 ```bash
-cd frontend
-cp .env.example .env
-npm install
-npm run dev
+docker exec backend npm run seed
 ```
 
-### 4. Testes:
+## Testes do back-end são executados com o comando:
 
 ```bash
 npm test
@@ -47,7 +52,7 @@ só roda se `DATABASE_URL` estiver definida; ele é
 pulado automaticamente caso contrário, para não quebrar `npm test` num
 ambiente sem banco configurado.
 
-### 5. Login com os dados semeados
+## Login com os dados semeados
 
 | Papel       | E-mail                  | Senha    |
 | ----------- | ----------------------- | -------- |
