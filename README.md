@@ -105,6 +105,8 @@ indisponível. O evento semeado (`MANUAL`) não depende delas.
 - Criação de testes automatizados com Jest;
 - Criação e configuração dos arquivos Docker;
 
+## O que foi feito sem IA
+
 ## Estrutura de pastas e arquivos
 
 ```
