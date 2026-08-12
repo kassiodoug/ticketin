@@ -1,4 +1,4 @@
-import { pool } from "../../db/pool";
+import { pool } from "@/db/pool";
 
 export async function listMyTickets(ownerId: string) {
   const result = await pool.query(
@@ -12,6 +12,7 @@ export async function listMyTickets(ownerId: string) {
      ORDER BY e.starts_at ASC`,
     [ownerId]
   );
+
   return result.rows;
 }
 
@@ -24,6 +25,7 @@ export async function getTicketForOwner(ticketId: string, ownerId: string) {
      WHERE t.id = $1 AND t.owner_id = $2`,
     [ticketId, ownerId]
   );
+
   return result.rows[0] ?? null;
 }
 
@@ -40,5 +42,6 @@ export async function getTicketByShareToken(shareToken: string) {
      WHERE t.share_token = $1`,
     [shareToken]
   );
+
   return result.rows[0] ?? null;
 }

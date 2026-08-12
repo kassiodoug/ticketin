@@ -5,6 +5,7 @@ function required(name: string, fallback?: string): string {
   if (value === undefined) {
     throw new Error(`Variável de ambiente obrigatória ausente: ${name}`);
   }
+
   return value;
 }
 

@@ -1,6 +1,6 @@
-import { env } from "../../config/env";
-import { pool } from "../../db/pool";
-import { generateShareToken, signTicketCode } from "../../utils/ticketCode";
+import { env } from "@/config/env";
+import { pool } from "@/db/pool";
+import { generateShareToken, signTicketCode } from "@/utils/ticketCode";
 
 /**
  * Cria uma reserva "segurando" os assentos escolhidos.
@@ -21,6 +21,7 @@ export async function createReservation(
   if (seatIds.length === 0) throw new Error("selecione ao menos um assento");
 
   const client = await pool.connect();
+
   try {
     await client.query("BEGIN");
 
@@ -101,6 +102,7 @@ export async function payReservation(
       [reservationId, clientId]
     );
     const reservation = reservationResult.rows[0];
+
     if (!reservation) throw new Error("reserva não encontrada");
     if (reservation.status !== "PENDING")
       throw new Error(`reserva já está ${reservation.status}`);

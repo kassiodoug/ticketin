@@ -34,6 +34,7 @@ reservationsRouter.post(
   requireRole("CLIENT"),
   async (req, res) => {
     const { simulateOutcome } = req.body ?? {};
+
     try {
       const result = await reservationsService.payReservation(
         req.params.id,

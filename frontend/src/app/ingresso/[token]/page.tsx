@@ -1,8 +1,8 @@
 "use client";
 
+import { api } from "@/api/client";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { api } from "../../../api/client";
 
 interface SharedTicket {
   id: string;
@@ -15,13 +15,11 @@ interface SharedTicket {
   used_at?: string;
 }
 
-// Rota pública — quem recebe o link não precisa estar logado. Mostra o
-// status do ingresso, mas nunca o código assinado (isso ficaria exposto
-// pra qualquer um com o link, o que anularia a proteção da portaria).
 export default function TicketSharePage() {
   const { token } = useParams<{ token: string }>();
   const [ticket, setTicket] = useState<SharedTicket | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [qrByTicket, setQrByTicket] = useState<string>("");
 
   useEffect(() => {
     api
@@ -30,12 +28,23 @@ export default function TicketSharePage() {
       .catch(() => setError("link inválido ou expirado"));
   }, [token]);
 
+  async function loadQr(ticketId: string) {
+    if (qrByTicket) return;
+
+    const { dataUrl } = await api.get<{ dataUrl: string }>(
+      `/tickets/${ticketId}/qrcode`
+    );
+
+    setQrByTicket(dataUrl);
+  }
+
   if (error)
     return (
       <div className='container'>
         <div className='error-banner'>{error}</div>
       </div>
     );
+
   if (!ticket) return <div className='container'>Carregando...</div>;
 
   return (
@@ -68,9 +77,23 @@ export default function TicketSharePage() {
             marginTop: "1rem",
           }}
         >
-          Este é um link de visualização. O código de entrada (QR) só aparece
-          para o dono do ingresso, em "Meus ingressos".
+          Mostre o código QR ou informe o código alfanumérico de 9 dígitos na
+          portaria.
         </p>
+
+        {qrByTicket ? (
+          <img
+            src={qrByTicket}
+            alt='QR do ingresso'
+            width={240}
+            height={240}
+            style={{ borderRadius: 4 }}
+          />
+        ) : (
+          <button className='btn-secondary' onClick={() => loadQr(ticket.id)}>
+            Mostrar QR
+          </button>
+        )}
       </div>
     </div>
   );

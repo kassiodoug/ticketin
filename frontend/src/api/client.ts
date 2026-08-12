@@ -20,6 +20,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     "Content-Type": "application/json",
     ...(options.headers as Record<string, string>),
   };
+
   if (token) headers.Authorization = `Bearer ${token}`;
 
   const response = await fetch(`${API_URL}${path}`, {
@@ -32,6 +33,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   if (!response.ok) {
     throw new ApiError(data.error ?? "erro inesperado", response.status);
   }
+
   return data as T;
 }
 

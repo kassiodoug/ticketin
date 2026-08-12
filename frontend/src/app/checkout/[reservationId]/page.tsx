@@ -1,8 +1,8 @@
 "use client";
 
+import { api, ApiError } from "@/api/client";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import { api, ApiError } from "../../../api/client";
 
 export default function CheckoutPage() {
   const { reservationId } = useParams<{ reservationId: string }>();
@@ -11,12 +11,10 @@ export default function CheckoutPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // O desafio pede que os dois caminhos (confirmação e recusa) sejam
-  // demonstráveis, então o botão de pagamento deixa a pessoa escolher o
-  // desfecho aqui — num gateway real, é claro, isso não existiria.
   async function pay(outcome: "APPROVE" | "DECLINE") {
     setLoading(true);
     setError(null);
+
     try {
       const res = await api.post<{ approved: boolean }>(
         `/reservations/${reservationId}/pay`,

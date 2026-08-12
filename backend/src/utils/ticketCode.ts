@@ -1,5 +1,5 @@
+import { env } from "@/config/env";
 import crypto from "crypto";
-import { env } from "../config/env";
 
 /**
  * O código dentro do QR não é o UUID do ticket puro — se fosse, qualquer um

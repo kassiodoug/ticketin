@@ -40,8 +40,10 @@ ticketsRouter.get(
       req.params.id,
       req.user!.id
     );
+
     if (!ticket)
       return res.status(404).json({ error: "ingresso não encontrado" });
+
     const dataUrl = await QRCode.toDataURL(ticket.code, {
       margin: 1,
       width: 320,

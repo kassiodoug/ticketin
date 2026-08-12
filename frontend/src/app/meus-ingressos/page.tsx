@@ -1,8 +1,8 @@
 "use client";
 
+import { api } from "@/api/client";
+import { RequireRole } from "@/components/RequireRole";
 import { useEffect, useState } from "react";
-import { api } from "../../api/client";
-import { RequireRole } from "../../components/RequireRole";
 
 interface Ticket {
   id: string;
@@ -34,9 +34,11 @@ function MyTicketsContent() {
 
   async function loadQr(ticketId: string) {
     if (qrByTicket[ticketId]) return;
+
     const { dataUrl } = await api.get<{ dataUrl: string }>(
       `/tickets/${ticketId}/qrcode`
     );
+
     setQrByTicket((prev) => ({ ...prev, [ticketId]: dataUrl }));
   }
 
