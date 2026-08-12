@@ -4,7 +4,7 @@ import { AuthProvider } from "../context/AuthContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Bilheteria — eventos e ingressos",
+  title: "TikectIn — eventos e ingressos",
   description: "Plataforma de eventos e ingressos — Desafio Elite Dev",
 };
 

@@ -6,12 +6,14 @@
   evento e no ingresso — reforça o tema em vez de decorar por decorar.
 */
 
+@import url("https://fonts.googleapis.com/css2?family=Stack+Sans+Notch:wght@200..700&display=swap");
+
 :root {
   --ink: #14171c;
   --ink-raised: #1c2028;
   --paper: #f4efe3;
   --paper-dim: #cfc9ba;
-  --marquee: #e8a33d;
+  --marquee: #3d8ae8;
   --stub-red: #c1483b;
   --valid-green: #4f9a6e;
   --line: #33383f;
@@ -127,6 +129,14 @@ textarea {
   color: var(--marquee);
   text-decoration: none;
 }
+
+.brand {
+  font-family: "Stack Sans Notch", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
 .topbar nav a {
   margin-left: 1.25rem;
   color: var(--paper-dim);

@@ -11,7 +11,7 @@ export function Topbar() {
   return (
     <header className='topbar'>
       <Link href='/' className='brand'>
-        ★ BILHETERIA
+        TicketIn
       </Link>
       <nav>
         {ready && !user && <Link href='/login'>Entrar</Link>}

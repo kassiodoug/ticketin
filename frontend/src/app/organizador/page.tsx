@@ -48,6 +48,7 @@ function OrganizerDashboardContent() {
   }
 
   function pick(item: ICatalogItem) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setSelected(item);
     if (item.suggestedVenue) setVenueName(item.suggestedVenue);
     if (item.suggestedDate) setStartsAt(item.suggestedDate.slice(0, 16));
