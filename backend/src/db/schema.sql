@@ -77,6 +77,7 @@ CREATE TABLE tickets (
   owner_id        UUID NOT NULL REFERENCES users(id),
   code            TEXT NOT NULL UNIQUE,   -- payload assinado, codificado no QR
   share_token     TEXT NOT NULL UNIQUE,   -- token opaco usado no link público de compartilhamento
+  verif_code      VARCHAR(9) NOT NULL,
   status          ticket_status NOT NULL DEFAULT 'VALID',
   used_at         TIMESTAMPTZ,
   used_by_gate_id UUID REFERENCES users(id),

@@ -1,5 +1,6 @@
 import { env } from "@/config/env";
 import { pool } from "@/db/pool";
+import { cuid2 } from "@/utils/cuid2";
 import { generateShareToken, signTicketCode } from "@/utils/ticketCode";
 
 /**
@@ -151,19 +152,31 @@ export async function payReservation(
 
     const tickets = [];
     for (const seatId of seatIds) {
+      const verificationCode = cuid2().toUpperCase();
       const ticketResult = await client.query(
-        `INSERT INTO tickets (reservation_id, event_id, seat_id, owner_id, code, share_token)
-         VALUES ($1,$2,$3,$4,'PENDING','PENDING') RETURNING id`,
-        [reservationId, reservation.event_id, seatId, clientId]
+        `INSERT INTO tickets (reservation_id, event_id, seat_id, owner_id, verif_code, code, share_token)
+         VALUES ($1,$2,$3,$4,$5, 'PENDING','PENDING') RETURNING id`,
+        [
+          reservationId,
+          reservation.event_id,
+          seatId,
+          clientId,
+          verificationCode,
+        ]
       );
       const ticketId = ticketResult.rows[0].id;
       const code = signTicketCode(ticketId);
       const shareToken = generateShareToken();
+
       await client.query(
         `UPDATE tickets SET code = $1, share_token = $2 WHERE id = $3`,
         [code, shareToken, ticketId]
       );
-      tickets.push({ id: ticketId, code, shareToken });
+      tickets.push({
+        id: ticketId,
+        code,
+        shareToken,
+      });
     }
 
     await client.query("COMMIT");
@@ -174,6 +187,7 @@ export async function payReservation(
     };
   } catch (err) {
     await client.query("ROLLBACK");
+    console.log(err);
     throw err;
   } finally {
     client.release();
