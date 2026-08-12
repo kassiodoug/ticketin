@@ -20,6 +20,7 @@ export default function TicketSharePage() {
   const [ticket, setTicket] = useState<SharedTicket | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [qrByTicket, setQrByTicket] = useState<string>("");
+  const [verificationCode, setVerificationCode] = useState<string>("");
 
   useEffect(() => {
     api
@@ -31,11 +32,13 @@ export default function TicketSharePage() {
   async function loadQr(ticketId: string) {
     if (qrByTicket) return;
 
-    const { dataUrl } = await api.get<{ dataUrl: string }>(
-      `/tickets/${ticketId}/qrcode`
-    );
+    const { dataUrl, verifCode } = await api.get<{
+      dataUrl: string;
+      verifCode: string;
+    }>(`/tickets/${ticketId}/qrcode`);
 
     setQrByTicket(dataUrl);
+    setVerificationCode(verifCode);
   }
 
   if (error)
@@ -72,7 +75,7 @@ export default function TicketSharePage() {
         </p>
 
         {qrByTicket ? (
-          <div className='container-center'>
+          <div className='container-center flex-column items-center'>
             <img
               className='center'
               src={qrByTicket}
@@ -81,11 +84,15 @@ export default function TicketSharePage() {
               height={240}
               style={{ borderRadius: 4 }}
             />
+
+            <span className='verification-code'>{verificationCode}</span>
           </div>
         ) : (
-          <button className='btn-secondary' onClick={() => loadQr(ticket.id)}>
-            Mostrar QR
-          </button>
+          <div className='container-center'>
+            <button className='btn-secondary' onClick={() => loadQr(ticket.id)}>
+              Mostrar QR e código de verificação
+            </button>
+          </div>
         )}
 
         <p

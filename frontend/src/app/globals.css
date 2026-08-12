@@ -320,3 +320,22 @@ textarea {
   color: var(--paper-dim);
   padding: 3rem 1rem;
 }
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.verification-code {
+  font-size: clamp(1rem, 1.8rem, 2rem);
+  font-family: monospace;
+  padding: 1rem;
+}

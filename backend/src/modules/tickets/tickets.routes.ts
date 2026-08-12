@@ -1,3 +1,4 @@
+import { formatVerificationCode } from "@/utils/helpers";
 import { Router } from "express";
 import QRCode from "qrcode";
 import { requireAuth, requireRole } from "../../middleware/auth";
@@ -26,6 +27,7 @@ ticketsRouter.get(
     );
     if (!ticket)
       return res.status(404).json({ error: "ingresso não encontrado" });
+
     res.json(ticket);
   }
 );
@@ -48,7 +50,11 @@ ticketsRouter.get(
       margin: 1,
       width: 320,
     });
-    res.json({ dataUrl });
+
+    res.json({
+      dataUrl,
+      verifCode: formatVerificationCode(ticket.verif_code, "-"),
+    });
   }
 );
 
@@ -56,5 +62,6 @@ ticketsRouter.get(
 ticketsRouter.get("/share/:token", async (req, res) => {
   const ticket = await ticketsService.getTicketByShareToken(req.params.token);
   if (!ticket) return res.status(404).json({ error: "link inválido" });
+
   res.json(ticket);
 });
