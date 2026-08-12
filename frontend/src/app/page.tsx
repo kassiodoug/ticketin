@@ -77,7 +77,9 @@ export default function Home() {
             <div className='eyebrow'>
               {new Date(ev.starts_at).toLocaleDateString("pt-BR", {
                 day: "2-digit",
-                month: "short",
+                month: "long",
+                hour: "2-digit",
+                minute: "2-digit",
               })}
             </div>
             <h3>{ev.title}</h3>

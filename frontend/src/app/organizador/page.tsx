@@ -1,24 +1,10 @@
 "use client";
 
+import { api, ApiError } from "@/api/client";
+import CreateEventModal from "@/components/CreateEventModal";
+import { RequireRole } from "@/components/RequireRole";
+import { ICatalogItem, IOrgEvent } from "@/types";
 import { useEffect, useState } from "react";
-import { api, ApiError } from "../../api/client";
-import { RequireRole } from "../../components/RequireRole";
-
-interface CatalogItem {
-  externalId: string;
-  source: "TICKETMASTER" | "TMDB";
-  title: string;
-  imageUrl?: string;
-  suggestedVenue?: string;
-  suggestedDate?: string;
-}
-interface OrgEvent {
-  id: string;
-  title: string;
-  starts_at: string;
-  capacity: number;
-  published: boolean;
-}
 
 export default function OrganizerDashboardPage() {
   return (
@@ -30,23 +16,18 @@ export default function OrganizerDashboardPage() {
 
 function OrganizerDashboardContent() {
   const [query, setQuery] = useState("");
-  const [items, setItems] = useState<CatalogItem[]>([]);
+  const [items, setItems] = useState<ICatalogItem[]>([]);
   const [searching, setSearching] = useState(false);
-  const [selected, setSelected] = useState<CatalogItem | null>(null);
-  const [events, setEvents] = useState<OrgEvent[]>([]);
+  const [selected, setSelected] = useState<ICatalogItem | null>(null);
+  const [events, setEvents] = useState<IOrgEvent[]>([]);
   const [error, setError] = useState<string | null>(null);
-
   const [venueName, setVenueName] = useState("");
-  const [venueAddress, setVenueAddress] = useState("");
   const [startsAt, setStartsAt] = useState("");
-  const [price, setPrice] = useState("");
-  const [seatRows, setSeatRows] = useState(5);
-  const [seatCols, setSeatCols] = useState(8);
-  const [creating, setCreating] = useState(false);
 
   function loadMyEvents() {
-    api.get<OrgEvent[]>("/events/mine").then(setEvents);
+    api.get<IOrgEvent[]>("/events/mine").then(setEvents);
   }
+
   useEffect(loadMyEvents, []);
 
   async function search(e: React.FormEvent) {
@@ -54,7 +35,7 @@ function OrganizerDashboardContent() {
     setSearching(true);
     setError(null);
     try {
-      const res = await api.get<{ items: CatalogItem[]; errors: string[] }>(
+      const res = await api.get<{ items: ICatalogItem[]; errors: string[] }>(
         `/catalog/search?q=${encodeURIComponent(query)}&source=both`
       );
       setItems(res.items);
@@ -66,44 +47,15 @@ function OrganizerDashboardContent() {
     }
   }
 
-  function pick(item: CatalogItem) {
+  function pick(item: ICatalogItem) {
     setSelected(item);
     if (item.suggestedVenue) setVenueName(item.suggestedVenue);
     if (item.suggestedDate) setStartsAt(item.suggestedDate.slice(0, 16));
   }
 
-  async function createEvent(e: React.FormEvent) {
-    e.preventDefault();
-    if (!selected) return;
-    setCreating(true);
-    setError(null);
-    try {
-      const capacity = seatRows * seatCols;
-      await api.post("/events", {
-        source: selected.source,
-        externalId: selected.externalId,
-        title: selected.title,
-        imageUrl: selected.imageUrl,
-        venueName,
-        venueAddress,
-        startsAt: new Date(startsAt).toISOString(),
-        priceCents: Math.round(parseFloat(price) * 100),
-        capacity,
-        seatRows,
-        seatCols,
-      });
-      setSelected(null);
-      setVenueName("");
-      setVenueAddress("");
-      setStartsAt("");
-      setPrice("");
-      loadMyEvents();
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "falha ao criar evento");
-    } finally {
-      setCreating(false);
-    }
-  }
+  const handleCloseModal = () => {
+    setSelected(null);
+  };
 
   return (
     <div className='container'>
@@ -165,80 +117,13 @@ function OrganizerDashboardContent() {
       )}
 
       {selected && (
-        <>
-          <h2 style={{ fontSize: "1rem" }}>
-            2. Configurar evento: {selected.title}
-          </h2>
-          <form
-            onSubmit={createEvent}
-            className='stub-card'
-            style={{ padding: "1.25rem", maxWidth: 420 }}
-          >
-            <div className='field'>
-              <label>Local</label>
-              <input
-                value={venueName}
-                onChange={(e) => setVenueName(e.target.value)}
-                required
-              />
-            </div>
-            <div className='field'>
-              <label>Endereço</label>
-              <input
-                value={venueAddress}
-                onChange={(e) => setVenueAddress(e.target.value)}
-              />
-            </div>
-            <div className='field'>
-              <label>Data e hora</label>
-              <input
-                type='datetime-local'
-                value={startsAt}
-                onChange={(e) => setStartsAt(e.target.value)}
-                required
-              />
-            </div>
-            <div className='field'>
-              <label>Preço por ingresso (R$)</label>
-              <input
-                type='number'
-                step='0.01'
-                min='0'
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                required
-              />
-            </div>
-            <div style={{ display: "flex", gap: "1rem" }}>
-              <div className='field' style={{ flex: 1 }}>
-                <label>Fileiras</label>
-                <input
-                  type='number'
-                  min={1}
-                  max={26}
-                  value={seatRows}
-                  onChange={(e) => setSeatRows(Number(e.target.value))}
-                />
-              </div>
-              <div className='field' style={{ flex: 1 }}>
-                <label>Assentos por fileira</label>
-                <input
-                  type='number'
-                  min={1}
-                  max={30}
-                  value={seatCols}
-                  onChange={(e) => setSeatCols(Number(e.target.value))}
-                />
-              </div>
-            </div>
-            <p style={{ fontSize: "0.8rem", color: "var(--paper-dim)" }}>
-              Capacidade total: {seatRows * seatCols} assentos
-            </p>
-            <button className='btn-primary' type='submit' disabled={creating}>
-              {creating ? "Publicando..." : "Publicar evento"}
-            </button>
-          </form>
-        </>
+        <CreateEventModal
+          item={selected}
+          loadMyEvents={loadMyEvents}
+          startAt={startsAt}
+          venueName={venueName}
+          onClose={handleCloseModal}
+        />
       )}
 
       <h2 style={{ fontSize: "1rem", marginTop: "2.5rem" }}>Meus eventos</h2>
