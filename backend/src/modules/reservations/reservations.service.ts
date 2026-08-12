@@ -152,7 +152,7 @@ export async function payReservation(
 
     const tickets = [];
     for (const seatId of seatIds) {
-      const verificationCode = cuid2().toUpperCase();
+      const verificationCode = cuid2();
       const ticketResult = await client.query(
         `INSERT INTO tickets (reservation_id, event_id, seat_id, owner_id, verif_code, code, share_token)
          VALUES ($1,$2,$3,$4,$5, 'PENDING','PENDING') RETURNING id`,

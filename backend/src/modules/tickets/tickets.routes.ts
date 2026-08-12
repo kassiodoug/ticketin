@@ -1,4 +1,3 @@
-import { formatVerificationCode } from "@/utils/helpers";
 import { Router } from "express";
 import QRCode from "qrcode";
 import { requireAuth, requireRole } from "../../middleware/auth";
@@ -53,7 +52,7 @@ ticketsRouter.get(
 
     res.json({
       dataUrl,
-      verifCode: formatVerificationCode(ticket.verif_code, "-"),
+      verifCode: ticket.verif_code,
     });
   }
 );

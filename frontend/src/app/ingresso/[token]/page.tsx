@@ -1,6 +1,7 @@
 "use client";
 
 import { api } from "@/api/client";
+import { formatVerificationCode } from "@/utils/helpers";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -85,7 +86,9 @@ export default function TicketSharePage() {
               style={{ borderRadius: 4 }}
             />
 
-            <span className='verification-code'>{verificationCode}</span>
+            <span className='verification-code'>
+              {formatVerificationCode(verificationCode.toUpperCase(), "-")}
+            </span>
           </div>
         ) : (
           <div className='container-center'>

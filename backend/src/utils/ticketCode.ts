@@ -36,6 +36,7 @@ export function verifyTicketCode(code: string): {
   if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
     return { valid: false };
   }
+
   return { valid: true, ticketId };
 }
 

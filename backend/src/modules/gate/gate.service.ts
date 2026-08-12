@@ -1,3 +1,4 @@
+import { isCuid } from "@paralleldrive/cuid2";
 import { pool } from "../../db/pool";
 import { verifyTicketCode } from "../../utils/ticketCode";
 
@@ -19,11 +20,22 @@ export async function validateTicket(
   expectedEventId?: string
 ): Promise<GateResult> {
   const { valid, ticketId } = verifyTicketCode(rawCode.trim());
-  if (!valid || !ticketId) {
-    return {
-      result: "INVALID",
-      reason: "código não confere com a assinatura esperada",
-    };
+
+  const queryTicket = {
+    colTarget: "t.id",
+    value: ticketId,
+  };
+
+  if (rawCode.length === 9 && isCuid(rawCode?.toLowerCase())) {
+    queryTicket.colTarget = "verif_code";
+    queryTicket.value = rawCode;
+  } else {
+    if (!valid || !ticketId) {
+      return {
+        result: "INVALID",
+        reason: "código não confere com a assinatura esperada",
+      };
+    }
   }
 
   const client = await pool.connect();
@@ -33,8 +45,8 @@ export async function validateTicket(
     const ticketResult = await client.query(
       `SELECT t.*, e.title AS event_title, e.id AS event_id
        FROM tickets t JOIN events e ON e.id = t.event_id
-       WHERE t.id = $1 FOR UPDATE`,
-      [ticketId]
+       WHERE ${queryTicket.colTarget} = $1 FOR UPDATE`,
+      [queryTicket.value]
     );
     const ticket = ticketResult.rows[0];
 
@@ -60,7 +72,7 @@ export async function validateTicket(
 
     await client.query(
       `UPDATE tickets SET status = 'USED', used_at = now() WHERE id = $1`,
-      [ticketId]
+      [ticket.id]
     );
     await client.query("COMMIT");
 

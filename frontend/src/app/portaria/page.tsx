@@ -81,25 +81,26 @@ function GateScannerContent() {
           Ativar câmera
         </button>
       )}
+
       {cameraOn && (
         <div
           id={SCANNER_ID}
           style={{ width: "100%", borderRadius: 4, overflow: "hidden" }}
         />
       )}
+
       {cameraError && <div className='error-banner'>{cameraError}</div>}
 
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          validate(manualCode);
-          setManualCode("");
+          validate(manualCode.toLocaleLowerCase());
         }}
         style={{ display: "flex", gap: "0.5rem", marginTop: "1.5rem" }}
       >
         <input
           placeholder='Código do ingresso (alternativa manual)'
-          value={manualCode}
+          value={manualCode.toUpperCase()}
           onChange={(e) => setManualCode(e.target.value)}
           style={{ flex: 1, fontFamily: "var(--font-mono)" }}
         />
