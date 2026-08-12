@@ -70,6 +70,24 @@ export default function TicketSharePage() {
           {ticket.venue_name} — Assento {ticket.row_label}
           {ticket.col_number}
         </p>
+
+        {qrByTicket ? (
+          <div className='container-center'>
+            <img
+              className='center'
+              src={qrByTicket}
+              alt='QR do ingresso'
+              width={240}
+              height={240}
+              style={{ borderRadius: 4 }}
+            />
+          </div>
+        ) : (
+          <button className='btn-secondary' onClick={() => loadQr(ticket.id)}>
+            Mostrar QR
+          </button>
+        )}
+
         <p
           style={{
             fontSize: "0.8rem",
@@ -80,20 +98,6 @@ export default function TicketSharePage() {
           Mostre o código QR ou informe o código alfanumérico de 9 dígitos na
           portaria.
         </p>
-
-        {qrByTicket ? (
-          <img
-            src={qrByTicket}
-            alt='QR do ingresso'
-            width={240}
-            height={240}
-            style={{ borderRadius: 4 }}
-          />
-        ) : (
-          <button className='btn-secondary' onClick={() => loadQr(ticket.id)}>
-            Mostrar QR
-          </button>
-        )}
       </div>
     </div>
   );

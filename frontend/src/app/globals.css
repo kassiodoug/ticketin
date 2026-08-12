@@ -107,6 +107,12 @@ textarea {
   padding: 1.5rem 1.25rem 4rem;
 }
 
+.container-center {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .topbar {
   display: flex;
   align-items: center;
