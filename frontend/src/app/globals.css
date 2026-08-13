@@ -387,3 +387,9 @@ textarea {
   top: 0;
   cursor: pointer;
 }
+
+.container-checkobx-published {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+}

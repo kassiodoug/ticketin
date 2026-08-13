@@ -26,6 +26,7 @@ export interface IOrgEventUpdate {
   price_cents: number;
   seat_rows: number;
   seat_cols: number;
+  published: boolean;
 }
 
 export interface TCreateEventModal {

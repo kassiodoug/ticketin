@@ -24,4 +24,5 @@ export interface IOrgEventUpdate {
   seat_rows: number;
   seat_cols: number;
   capacity: number;
+  published: boolean;
 }

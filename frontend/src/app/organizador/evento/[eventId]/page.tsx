@@ -18,6 +18,7 @@ export default function EventPage({}: IEventPageProps) {
     price_cents: 0,
     seat_rows: 1,
     seat_cols: 1,
+    published: false,
   });
 
   const handleChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,6 +28,12 @@ export default function EventPage({}: IEventPageProps) {
     let parsedValue = numberFields.includes(name) ? Number(value) : value;
 
     setEvent((prev) => ({ ...prev, [name]: parsedValue }));
+  };
+
+  const handleChangeCheckbox = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = ev.target.checked;
+
+    setEvent((prev) => ({ ...prev, published: checked }));
   };
 
   async function updateEvent(e: React.FormEvent) {
@@ -107,6 +114,16 @@ export default function EventPage({}: IEventPageProps) {
             onChange={handleChange}
             required
           />
+        </div>
+        <div className='container-checkobx-published'>
+          <input
+            type='checkbox'
+            checked={event.published}
+            onChange={handleChangeCheckbox}
+            name='published'
+            id='published'
+          />
+          <label htmlFor='published'>Publicado</label>
         </div>
         {/* <div style={{ display: "flex", gap: "1rem" }}>
           <div className='field' style={{ flex: 1 }}>

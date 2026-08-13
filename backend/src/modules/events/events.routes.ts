@@ -103,6 +103,7 @@ eventsRouter.patch(
       capacity,
       seat_rows,
       seat_cols,
+      published,
     } = req.body;
     const { id } = req.params;
 
@@ -132,6 +133,7 @@ eventsRouter.patch(
         capacity,
         seat_rows,
         seat_cols,
+        published,
       });
 
       res.status(200).json(event);

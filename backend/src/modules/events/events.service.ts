@@ -124,11 +124,6 @@ export async function updateEvent(input: IOrgEventUpdate) {
   try {
     await client.query("BEGIN");
 
-    const oldEvent = await client.query(
-      `SELECT seat_rows, seat_cols FROM events WHERE id = $1`,
-      [input.id]
-    );
-
     const eventResult = await client.query(
       `UPDATE events
         SET title = $1,
@@ -138,8 +133,9 @@ export async function updateEvent(input: IOrgEventUpdate) {
             price_cents = $5,
             seat_rows = $6,
             seat_cols = $7,
-            capacity = $8
-        WHERE id = $9
+            capacity = $8,
+            published = $9
+        WHERE id = $10
         RETURNING *`,
       [
         input.title,
@@ -150,6 +146,7 @@ export async function updateEvent(input: IOrgEventUpdate) {
         input.seat_rows,
         input.seat_cols,
         input.capacity,
+        input.published,
         input.id,
       ]
     );
