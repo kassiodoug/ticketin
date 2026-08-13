@@ -69,7 +69,7 @@ export default function EventPage({}: IEventPageProps) {
   }, []);
 
   return (
-    <div className='container-modal'>
+    <div className='container-center flex-column items-center'>
       <h2 style={{ fontSize: "1rem" }}>2. Configurar evento: {event?.title}</h2>
       <form
         onSubmit={updateEvent}
