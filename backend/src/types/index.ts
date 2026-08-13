@@ -1,3 +1,4 @@
-export * from "./ticketMaster"
-export * from "./catalog"
-export * from "./imdb"
+export * from "./catalog";
+export * from "./event";
+export * from "./imdb";
+export * from "./ticketMaster";

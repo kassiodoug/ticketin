@@ -17,10 +17,23 @@ export interface IOrgEvent {
   published: boolean;
 }
 
+export interface IOrgEventUpdate {
+  id: string;
+  title: string;
+  starts_at: string;
+  venue_name?: string;
+  venue_address?: string;
+  price_cents: number;
+  seat_rows: number;
+  seat_cols: number;
+}
+
 export interface TCreateEventModal {
   item: ICatalogItem;
   startAt: string;
   venueName: string;
+  seatRow?: number;
+  seatCol?: number;
   loadMyEvents: () => void;
   onClose: () => void;
 }

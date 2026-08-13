@@ -1,22 +1,7 @@
-import { pool } from "../../db/pool";
+import { pool } from "@/db/pool";
+import { ICreateEventInput, IOrgEventUpdate } from "@/types";
 
-export interface CreateEventInput {
-  organizerId: string;
-  source: "TICKETMASTER" | "TMDB" | "MANUAL";
-  externalId?: string;
-  title: string;
-  description?: string;
-  imageUrl?: string;
-  venueName: string;
-  venueAddress?: string;
-  startsAt: string;
-  priceCents: number;
-  capacity: number;
-  seatRows: number;
-  seatCols: number;
-}
-
-export async function createEvent(input: CreateEventInput) {
+export async function createEvent(input: ICreateEventInput) {
   if (input.seatRows * input.seatCols < input.capacity) {
     throw new Error(
       "seatRows x seatCols precisa comportar a capacity informada"
@@ -126,4 +111,56 @@ export async function listEventsByOrganizer(organizerId: string) {
     [organizerId]
   );
   return result.rows;
+}
+
+export async function updateEvent(input: IOrgEventUpdate) {
+  if (input.seat_rows * input.seat_cols < input.capacity) {
+    throw new Error(
+      "Fileiras x Assentos por fileira precisa comportar a capacidade informada"
+    );
+  }
+
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+
+    const oldEvent = await client.query(
+      `SELECT seat_rows, seat_cols FROM events WHERE id = $1`,
+      [input.id]
+    );
+
+    const eventResult = await client.query(
+      `UPDATE events
+        SET title = $1,
+            starts_at = $2,
+            venue_name = $3,
+            venue_address = $4,
+            price_cents = $5,
+            seat_rows = $6,
+            seat_cols = $7,
+            capacity = $8
+        WHERE id = $9
+        RETURNING *`,
+      [
+        input.title,
+        input.starts_at,
+        input.venue_name ?? null,
+        input.venue_address ?? null,
+        input.price_cents,
+        input.seat_rows,
+        input.seat_cols,
+        input.capacity,
+        input.id,
+      ]
+    );
+    const event = eventResult.rows[0];
+
+    await client.query("COMMIT");
+    return event;
+  } catch (err) {
+    await client.query("ROLLBACK");
+    throw err;
+  } finally {
+    client.release();
+  }
 }

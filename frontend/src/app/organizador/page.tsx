@@ -4,6 +4,7 @@ import { api, ApiError } from "@/api/client";
 import CreateEventModal from "@/components/CreateEventModal";
 import { RequireRole } from "@/components/RequireRole";
 import { ICatalogItem, IOrgEvent } from "@/types";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function OrganizerDashboardPage() {
@@ -146,6 +147,9 @@ function OrganizerDashboardContent() {
           <span style={{ color: "var(--paper-dim)", fontSize: "0.85rem" }}>
             {new Date(ev.starts_at).toLocaleDateString("pt-BR")} · {ev.capacity}{" "}
             lugares
+          </span>
+          <span>
+            <Link href={`/organizador/evento/${ev.id}`}>Gerenciar</Link>
           </span>
         </div>
       ))}

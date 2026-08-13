@@ -88,3 +88,55 @@ eventsRouter.post(
     }
   }
 );
+
+eventsRouter.patch(
+  "/update/:id",
+  requireAuth,
+  requireRole("ORGANIZER"),
+  async (req, res) => {
+    const {
+      title,
+      venue_name,
+      venue_address,
+      starts_at,
+      price_cents,
+      capacity,
+      seat_rows,
+      seat_cols,
+    } = req.body;
+    const { id } = req.params;
+
+    if (
+      !title ||
+      !venue_name ||
+      !starts_at ||
+      !price_cents ||
+      !capacity ||
+      !seat_rows ||
+      !seat_cols
+    ) {
+      return res.status(400).json({
+        error:
+          "Título, Local, Data e hora, preço, capacidade, quantidades de fileiras e assentos por fileira são obrigatórios",
+      });
+    }
+
+    try {
+      const event = await eventsService.updateEvent({
+        id,
+        title,
+        venue_name,
+        venue_address,
+        starts_at,
+        price_cents,
+        capacity,
+        seat_rows,
+        seat_cols,
+      });
+
+      res.status(200).json(event);
+    } catch (err: any) {
+      res.status(400).json({ error: err.message });
+    }
+  }
+);

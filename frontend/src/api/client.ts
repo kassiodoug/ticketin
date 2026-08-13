@@ -10,12 +10,13 @@ class ApiError extends Error {
 }
 
 function getToken(): string | null {
-  if (typeof window === "undefined") return null; // evita quebrar em Server Components
+  if (typeof window === "undefined") return null;
   return localStorage.getItem("token");
 }
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getToken();
+
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...(options.headers as Record<string, string>),
@@ -28,6 +29,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     headers,
     cache: "no-store",
   });
+
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
@@ -39,9 +41,16 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
 export const api = {
   get: <T>(path: string) => request<T>(path),
+
   post: <T>(path: string, body?: unknown) =>
     request<T>(path, {
       method: "POST",
+      body: body ? JSON.stringify(body) : undefined,
+    }),
+
+  patch: <T>(path: string, body?: unknown) =>
+    request<T>(path, {
+      method: "PATCH",
       body: body ? JSON.stringify(body) : undefined,
     }),
 };

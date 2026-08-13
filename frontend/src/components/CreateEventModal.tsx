@@ -9,8 +9,8 @@ export default function CreateEventModal({
 }: TCreateEventModal) {
   const [venueAddress, setVenueAddress] = useState("");
   const [price, setPrice] = useState("");
-  const [seatRows, setSeatRows] = useState(5);
-  const [seatCols, setSeatCols] = useState(8);
+  const [seatRows, setSeatRows] = useState(props.seatRow ?? 5);
+  const [seatCols, setSeatCols] = useState(props.seatCol ?? 8);
   const [creating, setCreating] = useState(false);
   const [venueName, setVenueName] = useState(props.venueName);
   const [startsAt, setStartsAt] = useState(props.startAt);
