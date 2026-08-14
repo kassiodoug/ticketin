@@ -393,3 +393,27 @@ textarea {
   align-items: center;
   padding: 1rem 0;
 }
+
+.datails-event-container {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+
+.datails-event-container h2 {
+  text-align: center;
+}
+
+.datails-event-image {
+  max-width: 100%;
+  width: auto;
+  display: block;
+  height: 25rem;
+  margin-inline: auto;
+}
+
+.datails-event-container span {
+  text-align: center;
+  display: block;
+  font-size: small;
+}

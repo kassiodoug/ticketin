@@ -1,17 +1,9 @@
 "use client";
 
+import { EventSummary } from "@/types";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api } from "../api/client";
-
-interface EventSummary {
-  id: string;
-  title: string;
-  venue_name: string;
-  starts_at: string;
-  price_cents: number;
-  image_url?: string;
-}
 
 export default function Home() {
   const [events, setEvents] = useState<EventSummary[]>([]);

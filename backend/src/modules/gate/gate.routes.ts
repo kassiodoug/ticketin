@@ -16,3 +16,23 @@ gateRouter.post(
     res.json(result);
   }
 );
+
+gateRouter.get("/", requireAuth, requireRole("GATE"), async (req, res) => {
+  const { q, from, to } = req.query;
+
+  const events = await gateService.listPublishedEvents({
+    q: q ? String(q) : undefined,
+    from: from ? String(from) : undefined,
+    to: to ? String(to) : undefined,
+  });
+
+  return res.json(events);
+});
+
+gateRouter.get("/:id", requireAuth, requireRole("GATE"), async (req, res) => {
+  const { id } = req.params;
+
+  const events = await gateService.getPublishedEvent(id);
+
+  return res.json(events);
+});

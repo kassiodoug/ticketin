@@ -12,6 +12,7 @@ eventsRouter.get("/", async (req, res) => {
     from: from ? String(from) : undefined,
     to: to ? String(to) : undefined,
   });
+
   res.json(events);
 });
 

@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function EventPage({}: IEventPageProps) {
-  const { eventId } = useParams();
+  const { eventId } = useParams<{ eventId: string }>();
   const [error, setError] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [event, setEvent] = useState<IOrgEventUpdate>({

@@ -1,6 +1,6 @@
+import { pool } from "@/db/pool";
+import { verifyTicketCode } from "@/utils/ticketCode";
 import { isCuid } from "@paralleldrive/cuid2";
-import { pool } from "../../db/pool";
-import { verifyTicketCode } from "../../utils/ticketCode";
 
 export type GateResult =
   | { result: "INVALID"; reason: string }
@@ -83,4 +83,41 @@ export async function validateTicket(
   } finally {
     client.release();
   }
+}
+
+export async function listPublishedEvents(filters: {
+  q?: string;
+  from?: string;
+  to?: string;
+}) {
+  const conditions = ["published = true"];
+  const params: any[] = [];
+
+  if (filters.q) {
+    params.push(`%${filters.q}%`);
+    conditions.push(`title ILIKE $${params.length}`);
+  }
+  if (filters.from) {
+    params.push(filters.from);
+    conditions.push(`starts_at >= $${params.length}`);
+  }
+  if (filters.to) {
+    params.push(filters.to);
+    conditions.push(`starts_at <= $${params.length}`);
+  }
+
+  const result = await pool.query(
+    `SELECT * FROM events WHERE ${conditions.join(" AND ")} ORDER BY starts_at ASC`,
+    params
+  );
+  return result.rows;
+}
+
+export async function getPublishedEvent(eventId: string) {
+  const result = await pool.query(
+    `SELECT * FROM events WHERE id = $1 AND published = true`,
+    [eventId]
+  );
+
+  return result.rows[0];
 }
