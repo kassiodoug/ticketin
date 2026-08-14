@@ -3,6 +3,8 @@
 Plataforma para eventos e ingressos: onde organizador e cliente se encontram.
 Projeto participando do processo seletivo do Projeto de Desenvolvimento ELITE DEV | Desenvolvedor Full Stack Jr na Verzel.
 
+Link do projeto hospedado: [TicketIn](https://ticketin-dev.vercel.app/)
+
 ## Como rodar o projeto
 
 ### 1. Configurando .env do back-end, a partir da pasta raiz execute os seguintes comandos:
@@ -106,6 +108,35 @@ indisponível. O evento semeado (`MANUAL`) não depende delas.
 - Criação e configuração dos arquivos Docker;
 
 ## O que foi feito sem IA
+
+- Edição do docker-compose.yml, criando uma rede privada entre back-end e banco de dados para evitar de export o banco publicamente;
+- Rodas gerenciamento de eventos, com validações de body/params e criação de queries sql;
+- Implementação dos dados de seed (email e senha) na página de login;
+- Adição do arquivo de configuração do eslint;
+- Adição do arquivo de configuração do prettier;
+- Compartilhamento de ingresso com página exibindo códigos QR e token (6 dígitos) `/ingresso/[token]`;
+- Verificação do código token no back-end para função de portaria (gate);
+- Criação de modal para cadastro do filme;
+- Página para o organizador gerenciar seu evento/filme `/organizador/evento/[eventId]`.
+
+## To Do List
+
+[x] Permitir compartilhar ingresso com qualquer pessoa;
+[x] Permitir que o organizador gerencie seus eventos/filmes depois de adicionados;
+[x] Fazer validação do ingresso para cada evento/filme;
+[x] Exibir informações sobre o evento/filme na página da portaria;
+[x] Adicionar validação por código manual (token de 6 dígitos);
+[x] Geração do ingresso com um código em QR que não possa ser forjado;
+[] Adicionar Prisma ORM;
+[] Adicionar Tailwind CSS;
+[] Adicionar Shadcn CSS;
+[] Cancelamento com devolução ao estoque;
+[x] Adicionar preenchimento automático de login e senha ao clicar no e-mail de seeds na página de login;
+[] Mostrar número e letra do assento para ficar melhor do cliente visualizar qual assento está escolhendo;
+[x] Ao validar o QR Code mostrar mais informações do evento/filme;
+[] Adicionar botões e nav para ajudar na navegação;
+[] Permitir que o QR Code seja utilizado somente 3h antes do evento/filme começar;
+[x] Adicionar loaders nas imagens e/ou cards de evento/filme;
 
 ## Estrutura de pastas e arquivos
 
