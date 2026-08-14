@@ -417,3 +417,16 @@ textarea {
   display: block;
   font-size: small;
 }
+
+.container-seed-info > :nth-child(n + 1) {
+  font-size: 0.8rem;
+  color: var(--paper-dim);
+}
+
+.email-seed {
+  padding: 0.5rem;
+  margin: 0.25rem auto;
+  border: solid 1px var(--line);
+  cursor: pointer;
+  border-radius: var(--radius);
+}

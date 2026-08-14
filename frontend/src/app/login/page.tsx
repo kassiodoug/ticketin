@@ -6,6 +6,16 @@ import { useState } from "react";
 import { ApiError } from "../../api/client";
 import { useAuth } from "../../context/AuthContext";
 
+const seedContent = {
+  usersEmail: [
+    "organizador@evento.test",
+    "cliente1@evento.test",
+    "cliente2@evento.test",
+    "portaria@evento.test",
+  ],
+  password: "senha123",
+};
+
 export default function LoginPage() {
   const { login } = useAuth();
   const router = useRouter();
@@ -27,6 +37,12 @@ export default function LoginPage() {
       setLoading(false);
     }
   }
+
+  const handleClick = (ev: React.MouseEvent<HTMLParagraphElement>) => {
+    const userEmail = ev.currentTarget.textContent;
+    setEmail(userEmail);
+    setPassword(seedContent.password);
+  };
 
   return (
     <div className='container' style={{ maxWidth: 380 }}>
@@ -66,10 +82,15 @@ export default function LoginPage() {
       >
         Não tem conta? <Link href='/registrar'>Criar conta</Link>
       </p>
-      <p style={{ fontSize: "0.8rem", color: "var(--paper-dim)" }}>
-        Usuários de teste (seed): organizador@evento.test, cliente1@evento.test,
-        cliente2@evento.test, portaria@evento.test — senha: senha123
-      </p>
+      <div className='container-seed-info'>
+        <p>Usuários de teste (seed):</p>
+
+        {seedContent.usersEmail.map((userEmail, idx) => (
+          <p className='email-seed' onClick={handleClick} key={idx}>
+            {userEmail}
+          </p>
+        ))}
+      </div>
     </div>
   );
 }
