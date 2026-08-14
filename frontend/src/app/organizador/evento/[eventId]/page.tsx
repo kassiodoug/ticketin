@@ -1,11 +1,11 @@
 "use client";
 
 import { api, ApiError } from "@/api/client";
-import { IEventPageProps, IOrgEventUpdate } from "@/types";
+import { IOrgEventUpdate } from "@/types";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function EventPage({}: IEventPageProps) {
+export default function EventPage() {
   const { eventId } = useParams<{ eventId: string }>();
   const [error, setError] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
