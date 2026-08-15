@@ -121,22 +121,24 @@ indisponível. O evento semeado (`MANUAL`) não depende delas.
 
 ## To Do List
 
-[x] Permitir compartilhar ingresso com qualquer pessoa;
-[x] Permitir que o organizador gerencie seus eventos/filmes depois de adicionados;
-[x] Fazer validação do ingresso para cada evento/filme;
-[x] Exibir informações sobre o evento/filme na página da portaria;
-[x] Adicionar validação por código manual (token de 6 dígitos);
-[x] Geração do ingresso com um código em QR que não possa ser forjado;
-[] Adicionar Prisma ORM;
-[] Adicionar Tailwind CSS;
-[] Adicionar Shadcn CSS;
-[] Cancelamento com devolução ao estoque;
-[x] Adicionar preenchimento automático de login e senha ao clicar no e-mail de seeds na página de login;
-[] Mostrar número e letra do assento para ficar melhor do cliente visualizar qual assento está escolhendo;
-[x] Ao validar o QR Code mostrar mais informações do evento/filme;
-[] Adicionar botões e nav para ajudar na navegação;
-[] Permitir que o QR Code seja utilizado somente 3h antes do evento/filme começar;
-[x] Adicionar loaders nas imagens e/ou cards de evento/filme;
+- [x] Permitir compartilhar ingresso com qualquer pessoa;
+- [x] Permitir que o organizador gerencie seus eventos/filmes depois de adicionados;
+- [x] Fazer validação do ingresso para cada evento/filme;
+- [x] Exibir informações sobre o evento/filme na página da portaria;
+- [x] Adicionar validação por código manual (token de 6 dígitos);
+- [x] Geração do ingresso com um código em QR que não possa ser forjado;
+- [ ] Adicionar Prisma ORM;
+- [ ] Adicionar Tailwind CSS;
+- [ ] Adicionar Shadcn CSS;
+- [ ] Cancelamento com devolução ao estoque;
+- [x] Adicionar preenchimento automático de login e senha ao clicar no e-mail de seeds na página de login;
+- [ ] Mostrar número e letra do assento para ficar melhor do cliente visualizar qual assento está escolhendo;
+- [x] Ao validar o QR Code mostrar mais informações do evento/filme;
+- [ ] Adicionar botões e nav para ajudar na navegação;
+- [ ] Permitir que o QR Code seja utilizado somente 3h antes do evento/filme começar;
+- [x] Adicionar loaders nas imagens e/ou cards de evento/filme;
+- [ ] Salvar token nos cookies;
+- [ ] Fazer validação do usuário logado em server componets.
 
 ## Estrutura de pastas e arquivos
 
