@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Topbar } from "../components/Topbar";
 import { AuthProvider } from "../context/AuthContext";
@@ -31,6 +32,7 @@ export default function RootLayout({
         <AuthProvider>
           <Topbar />
           {children}
+          <Analytics />
         </AuthProvider>
       </body>
     </html>
